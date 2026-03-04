@@ -1,6 +1,6 @@
 import { initializeFirebase } from '../../../shared/src/firebaseConfig';
 
-// load firebase config from NExt.js env variables, NEXT_PUBLIC_ prefix is required for client-side access
+// load firebase config from Next.js env variables, NEXT_PUBLIC_ prefix is required for client-side access
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || '',
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || '',
