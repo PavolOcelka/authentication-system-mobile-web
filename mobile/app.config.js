@@ -1,4 +1,11 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+
+// Determine which env file to load based on EXPO_ENV
+// Default to 'development' if not specified
+const env = process.env.EXPO_ENV || 'development';
+dotenv.config({ path: `.env.${env}` });
+
+console.log(`[app.config.js] Loading environment: ${env}`);
 
 export default {
   "expo": {
