@@ -19,11 +19,11 @@ setup:
 	cd mobile && npm install
 	@echo "✅ All dependencies installed!"
 
-## Copy .env.example files to .env (will NOT overwrite existing .env)
+## Copy .env.example files to .env.development (will NOT overwrite existing)
 setup-env:
-	@test -f web/.env || cp web/.env.example web/.env && echo "📄 web/.env created"
-	@test -f mobile/.env || cp mobile/.env.example mobile/.env && echo "📄 mobile/.env created"
-	@echo "⚠️  Fill in your Firebase credentials in web/.env and mobile/.env"
+	@test -f web/.env.development || (cp web/.env.example web/.env.development && echo "📄 web/.env.development created")
+	@test -f mobile/.env.development || (cp mobile/.env.example mobile/.env.development && echo "📄 mobile/.env.development created")
+	@echo "⚠️  Fill in your Firebase credentials in web/.env.development and mobile/.env.development"
 
 # ──────────────────────────────────────────────
 # Development
