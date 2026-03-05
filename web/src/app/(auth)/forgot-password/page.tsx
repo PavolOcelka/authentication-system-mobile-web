@@ -1,19 +1,21 @@
 'use client';
 
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../../../lib/useAuth';
 import { AuthForm } from '../../../components/AuthForm';
 
 export default function ForgotPasswordPage() {
-  const { resetPassword, loading, error } = useAuth();
+  const { resetPassword, loading, error, clearError } = useAuth();
+
+  useEffect(() => { return () => clearError(); }, []);
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await resetPassword(email);
-    if (!error) setSent(true);
+    const success = await resetPassword(email);
+    if (success) setSent(true);
   };
 
   if (sent) {

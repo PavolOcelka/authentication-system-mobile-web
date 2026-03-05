@@ -1,21 +1,23 @@
 'use client';
 
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../lib/useAuth';
 import { AuthForm } from '../../../components/AuthForm';
 
 export default function LoginPage() {
-  const { signIn, loading, error } = useAuth();
+  const { signIn, loading, error, clearError } = useAuth();
   const router = useRouter();
+
+  useEffect(() => { return () => clearError(); }, []);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await signIn(email, password);
-    if (!error) router.push('/dashboard');
+    const success = await signIn(email, password);
+    if (success) router.push('/dashboard');
   };
 
   return (

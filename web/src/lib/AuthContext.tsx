@@ -14,14 +14,41 @@ import {
 
 import type { User, AuthError } from '@shared/types';
 
+const friendlyMessages: Record<string, string> = {
+  'auth/email-already-in-use': 'An account with this email already exists.',
+  'auth/invalid-email': 'Please enter a valid email address.',
+  'auth/user-disabled': 'This account has been disabled.',
+  'auth/user-not-found': 'No account found with this email.',
+  'auth/wrong-password': 'Incorrect password. Please try again.',
+  'auth/invalid-credential': 'Invalid email or password.',
+  'auth/too-many-requests': 'Too many attempts. Please try again later.',
+  'auth/weak-password': 'Password is too weak. Use at least 6 characters.',
+  'auth/network-request-failed': 'Network error. Check your connection and try again.',
+  'auth/popup-closed-by-user': 'Sign-in popup was closed. Please try again.',
+  'auth/requires-recent-login': 'Please sign in again to complete this action.',
+};
+
+const toAuthError = (err: unknown): AuthError => {
+  const code = (err as { code?: string }).code ?? 'auth/unknown';
+  const originalMessage = (err as { message?: string }).message ?? '';
+  // Use our friendly map first, then preserve custom messages (e.g. whitelist),
+  // only fall back to generic if the message looks like a raw Firebase string
+  const message =
+    friendlyMessages[code] ??
+    (originalMessage && !originalMessage.startsWith('Firebase:') ? originalMessage : 'Something went wrong. Please try again.');
+  return { code, message };
+};
+
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
   error: AuthError | null;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
-  signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<boolean>;
+  signUp: (email: string, password: string) => Promise<boolean>;
+  signOut: () => Promise<boolean>;
+  resetPassword: (email: string) => Promise<boolean>;
+  clearError: () => void;
+  actionInProgress: boolean;
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);
@@ -36,12 +63,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<AuthError | null>(null);
+  const [actionInProgress, setActionInProgress] = useState(false);
 
   useEffect(() => {
     logger.info('AuthProvider: subscribing to auth state');
     const unsubscribe = onAuthStateChange((firebaseUser) => {
       if (firebaseUser) {
-        logger.info('Auth state changed: user signed in', { uid: firebaseUser.uid, email: firebaseUser.email });
+        logger.info('Auth state changed: user signed in', firebaseUser.uid, firebaseUser.email);
       } else {
         logger.info('Auth state changed: no user (signed out)');
       }
@@ -52,14 +80,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return unsubscribe;
   }, []);
 
-  const handleAuthAction = async (action: () => Promise<unknown>): Promise<void> => {
+  const handleAuthAction = async (action: () => Promise<unknown>): Promise<boolean> => {
     setError(null);
+    setActionInProgress(true);
     try {
       await action();
+      return true;
     } catch (err) {
-      const authError = err as AuthError;
-      logger.error('Auth action failed', { code: authError.code, message: authError.message });
-      setError(authError);
+      logger.error('Auth action failed', (err as { code?: string }).code, err);
+      setError(toAuthError(err));
+      return false;
+    } finally {
+      setActionInProgress(false);
     }
   };
 
@@ -83,8 +115,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return handleAuthAction(() => authResetPassword(email));
   };
 
+  const clearError = () => setError(null);
+
   return (
-    <AuthContext.Provider value={{ user, loading, error, signIn, signUp, signOut, resetPassword }}>
+    <AuthContext.Provider value={{ user, loading, error, signIn, signUp, signOut, resetPassword, clearError, actionInProgress }}>
       {children}
     </AuthContext.Provider>
   );
