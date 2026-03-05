@@ -1,4 +1,5 @@
 import { initializeFirebase } from '@shared/firebaseConfig';
+import { logger } from './logger';
 
 // load firebase config from Next.js env variables, NEXT_PUBLIC_ prefix is required for client-side access
 const firebaseConfig = {
@@ -18,6 +19,7 @@ if (!firebaseConfig.apiKey) {
 
 // Initialize Firebase with web config
 const { auth, db } = initializeFirebase(firebaseConfig);
+logger.info('Firebase initialized', { projectId: firebaseConfig.projectId });
 
 // Export for use in web app
 export { auth, db };
