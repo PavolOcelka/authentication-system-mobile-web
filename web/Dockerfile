@@ -28,6 +28,7 @@ WORKDIR /app
 
 # Copy shared library — needed for the @shared alias during next build.
 COPY shared ./shared
+RUN cd shared && npm ci
 
 # Copy web source and the dependencies installed in the deps stage.
 COPY web ./web
