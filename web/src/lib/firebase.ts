@@ -1,7 +1,6 @@
-import { initializeFirebase } from '@shared/firebaseConfig';
+import { initializeFirebase, initializeWebAppCheck } from '@shared/firebaseConfig';
 import { logger } from './logger';
 
-// load firebase config from Next.js env variables, NEXT_PUBLIC_ prefix is required for client-side access
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_API_KEY || '',
   authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN || '',
@@ -12,14 +11,22 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID || '',
 };
 
-// validate if all env variables are present
 if (!firebaseConfig.apiKey) {
   throw new Error('Missing Firebase configuration. Check your .env.development file.');
 }
 
-// Initialize Firebase with web config
 const { auth, db } = initializeFirebase(firebaseConfig);
 logger.info('Firebase initialized', { projectId: firebaseConfig.projectId });
 
-// Export for use in web app
+if (typeof window !== 'undefined') {
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  if (siteKey) {
+    if (process.env.NEXT_PUBLIC_APP_CHECK_DEBUG === 'true') {
+      (self as unknown as { FIREBASE_APPCHECK_DEBUG_TOKEN?: boolean }).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+    }
+    initializeWebAppCheck(siteKey);
+    logger.info('App Check initialized with reCAPTCHA Enterprise');
+  }
+}
+
 export { auth, db };

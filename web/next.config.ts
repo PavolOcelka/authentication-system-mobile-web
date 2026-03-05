@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
     resolveAlias: {
       '@shared': sharedPath,
     },
+    root: path.resolve(process.cwd(), '..'),
   },
 };
 
