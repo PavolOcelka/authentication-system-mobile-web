@@ -88,6 +88,8 @@ EXPO_PUBLIC_MEASUREMENT_ID=
 
 All `.env` files are gitignored. Only `.env.example` files are committed so that other developers know which variables are required without ever exposing real credentials.
 
+**Firebase CLI (for deploy only):** If you'll deploy Cloud Functions or Firestore rules, link your project once before your first deploy: `firebase use <project-id>`. Use the same value as `NEXT_PUBLIC_PROJECT_ID` in your `.env.development`. This is *not* needed to run the app locally — only for `make deploy-functions` or `make deploy-rules`.
+
 ### 4. Start development servers
 
 Web (runs on http://localhost:3000):
@@ -141,7 +143,29 @@ make docker-build       # build images only
 #Run make docker-build first if docker-up fails
 ```
 
-### 8. Cleanup
+### 8. Cloud Functions (Blocking Whitelist)
+
+The `beforeUserCreated` blocking function enforces the whitelist server-side — the only way to prevent Auth accounts for non-whitelisted emails.
+
+**Prerequisite:** Upgrade your Firebase project to [Identity Platform](https://firebase.google.com/docs/auth#identity-platform) (required for blocking functions).
+
+**Deploy:**
+
+```bash
+# 1. Link your project (same PROJECT_ID as in .env.development — see Setup step 3)
+firebase use <project-id>
+
+# 2. Install functions dependencies
+cd functions && npm install && cd ..
+
+# 3. Deploy
+make deploy-functions
+make deploy-rules
+```
+
+**Firestore rules** are in `firestore.rules`. Deploy them with `firebase deploy --only firestore:rules` so rules are version-controlled and reviewable.
+
+### 9. Cleanup
 
 Remove all `node_modules` directories at once:
 
@@ -160,6 +184,9 @@ authentication-system-mobile-web/
 ├── shared/             Shared TypeScript library (Firebase init, auth, user service)
 ├── web/                Next.js web application
 ├── mobile/             Expo React Native application
+├── functions/          Cloud Functions (blocking whitelist enforcement)
+├── firebase.json       Firebase config (functions, firestore rules)
+├── firestore.rules     Firestore security rules (version-controlled)
 ├── Makefile            Development commands
 ├── docker-compose.yml  Docker Compose configuration
 └── package.json        Root scripts that orchestrate all packages
@@ -219,6 +246,8 @@ In a production deployment, per-account rate limiting would be added on top of A
 ### Whitelist-Based Registration
 
 Sign-up is gated behind a Firestore-backed whitelist. Only email addresses that exist in the `whitelist` collection with `approved: true` are allowed to register. This is enabled by default on web and can be toggled per platform through the `requireWhitelist` option in the shared auth service.
+
+**Server-side enforcement:** A `beforeUserCreated` blocking Cloud Function prevents Auth account creation for non-whitelisted emails — this cannot be bypassed by the client. It requires Firebase Authentication with Identity Platform (upgrade in Firebase Console). Deploy with `firebase deploy --only functions`. See `functions/` for the implementation.
 
 ### Logger
 

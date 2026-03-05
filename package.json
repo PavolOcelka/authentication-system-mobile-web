@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "setup": "npm run setup:mobile && npm run setup:web && npm run setup:shared",
+    "setup": "npm run setup:mobile && npm run setup:web && npm run setup:shared && npm run setup:functions",
     "setup:mobile": "cd mobile && npm install",
     "setup:web": "cd web && npm install",
     "setup:shared": "cd shared && npm install",
+    "setup:functions": "cd functions && npm install",
 
     "dev:web": "cd web && npm run dev",
     "dev:mobile": "cd mobile && npm run start",

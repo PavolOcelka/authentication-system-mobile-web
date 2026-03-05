@@ -305,6 +305,12 @@ FakesAssemblies/
 .ntvs_analysis.dat
 node_modules/
 
+# Firebase (each dev runs firebase use <project-id> locally)
+.firebaserc
+
+# Firebase Functions build output
+functions/lib/
+
 # Visual Studio 6 build log
 *.plg
 

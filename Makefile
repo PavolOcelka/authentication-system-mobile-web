@@ -12,11 +12,12 @@
 # Setup
 # ──────────────────────────────────────────────
 
-## Install all dependencies (shared + web + mobile)
+## Install all dependencies (shared + web + mobile + functions)
 setup:
 	cd shared && npm install
 	cd web && npm install
 	cd mobile && npm install
+	cd functions && npm install
 	@echo "✅ All dependencies installed!"
 
 ## Copy .env.example files to .env.development (will NOT overwrite existing)
@@ -110,12 +111,24 @@ docker-build:
 	docker-compose build
 
 # ──────────────────────────────────────────────
+# Firebase (Functions, Firestore rules)
+# ──────────────────────────────────────────────
+
+## Deploy Cloud Functions (blocking whitelist)
+deploy-functions:
+	cd functions && npm run build && firebase deploy --only functions
+
+## Deploy Firestore rules
+deploy-rules:
+	firebase deploy --only firestore:rules
+
+# ──────────────────────────────────────────────
 # Cleanup
 # ──────────────────────────────────────────────
 
 ## Remove all node_modules directories
 clean:
-	rm -rf node_modules shared/node_modules web/node_modules mobile/node_modules
+	rm -rf node_modules shared/node_modules web/node_modules mobile/node_modules functions/node_modules functions/lib
 	@echo "🧹 All node_modules removed. Run 'make setup' to reinstall."
 
 # ──────────────────────────────────────────────
@@ -155,6 +168,10 @@ help:
 	@echo "    make docker-up          Build & start containers"
 	@echo "    make docker-down        Stop containers"
 	@echo "    make docker-build       Build images only"
+	@echo ""
+	@echo "  Firebase"
+	@echo "    make deploy-functions   Deploy Cloud Functions (blocking whitelist)"
+	@echo "    make deploy-rules       Deploy Firestore rules"
 	@echo ""
 	@echo "  Cleanup"
 	@echo "    make clean              Remove all node_modules"
