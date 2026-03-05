@@ -121,7 +121,15 @@ make build-web          # production build
 
 ### 7. Docker
 
-The Makefile includes Docker targets for containerised builds:
+Docker requires Docker Desktop (or the Docker daemon) to be running. Start it before using any Docker commands.
+
+Docker Compose reads Firebase credentials from a root `.env` file for build-time arguments. Create it with:
+
+```bash
+make setup-env-docker
+```
+
+Then open `.env` in the project root and fill in the same `NEXT_PUBLIC_*` values you use in `web/.env.development`. You can copy them from there.
 
 ```bash
 make docker-up          # build and start containers
