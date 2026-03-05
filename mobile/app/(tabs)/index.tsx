@@ -1,8 +1,13 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useAuth } from '../../lib/useAuth';
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
 
 export default function DashboardScreen() {
   const { user, signOut } = useAuth();
+  const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme];
+  const styles = createStyles(colors);
 
   return (
     <View style={styles.container}>
@@ -18,12 +23,14 @@ export default function DashboardScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, backgroundColor: '#fff', justifyContent: 'center' },
-  title: { fontSize: 28, fontWeight: '700', color: '#09090b', marginBottom: 24 },
-  card: { backgroundColor: '#f4f4f5', borderRadius: 12, padding: 20, marginBottom: 32 },
-  label: { fontSize: 13, color: '#71717a', marginBottom: 4 },
-  email: { fontSize: 16, fontWeight: '500', color: '#09090b' },
-  button: { height: 44, backgroundColor: '#dc2626', borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
-  buttonText: { color: '#fff', fontSize: 14, fontWeight: '500' },
-});
+function createStyles(colors: typeof Colors.light) {
+  return StyleSheet.create({
+    container: { flex: 1, padding: 24, backgroundColor: colors.background, justifyContent: 'center' },
+    title: { fontSize: 28, fontWeight: '700', color: colors.text, marginBottom: 24 },
+    card: { backgroundColor: colors.card, borderRadius: 12, padding: 20, marginBottom: 32 },
+    label: { fontSize: 13, color: colors.tabIconDefault, marginBottom: 4 },
+    email: { fontSize: 16, fontWeight: '500', color: colors.text },
+    button: { height: 44, backgroundColor: colors.tint, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
+    buttonText: { color: '#fff', fontSize: 14, fontWeight: '500' },
+  });
+}

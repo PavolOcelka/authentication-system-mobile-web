@@ -42,7 +42,7 @@ export default function RegisterPage() {
       footer={
         <>
           Already have an account?{' '}
-          <Link href="/login" className="font-medium text-zinc-900 hover:underline dark:text-zinc-50">
+          <Link href="/login" className="font-medium text-foreground hover:underline">
             Sign in
           </Link>
         </>
@@ -54,7 +54,7 @@ export default function RegisterPage() {
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="h-10 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder-zinc-400 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder-zinc-600 dark:focus:border-zinc-600"
+        className="h-10 rounded-lg border border-border bg-input px-3 text-sm text-foreground placeholder-muted outline-none focus:border-accent"
       />
       <input
         type="password"
@@ -62,7 +62,7 @@ export default function RegisterPage() {
         required
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="h-10 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder-zinc-400 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder-zinc-600 dark:focus:border-zinc-600"
+        className="h-10 rounded-lg border border-border bg-input px-3 text-sm text-foreground placeholder-muted outline-none focus:border-accent"
       />
       <input
         type="password"
@@ -70,7 +70,7 @@ export default function RegisterPage() {
         required
         value={confirm}
         onChange={(e) => setConfirm(e.target.value)}
-        className="h-10 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder-zinc-400 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder-zinc-600 dark:focus:border-zinc-600"
+        className="h-10 rounded-lg border border-border bg-input px-3 text-sm text-foreground placeholder-muted outline-none focus:border-accent"
       />
     </AuthForm>
   );

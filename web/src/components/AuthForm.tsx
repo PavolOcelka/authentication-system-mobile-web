@@ -16,13 +16,13 @@ interface AuthFormProps {
 
 export function AuthForm({ title, subtitle, onSubmit, error, loading, submitLabel, children, footer }: AuthFormProps) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black px-4">
+    <div className="flex min-h-full flex-1 items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm">
-        <h1 className="mb-1 text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h1 className="mb-1 text-2xl font-semibold tracking-tight text-foreground">
           {title}
         </h1>
         {subtitle && (
-          <p className="mb-6 text-sm text-zinc-500 dark:text-zinc-400">{subtitle}</p>
+          <p className="mb-6 text-sm text-muted">{subtitle}</p>
         )}
         {!subtitle && <div className="mb-5" />}
 
@@ -37,14 +37,14 @@ export function AuthForm({ title, subtitle, onSubmit, error, loading, submitLabe
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 flex h-10 items-center justify-center rounded-lg bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            className="mt-2 flex h-10 items-center justify-center rounded-lg bg-accent px-4 text-sm font-medium text-accent-foreground transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? 'Please wait...' : submitLabel}
           </button>
         </form>
 
         {footer && (
-          <div className="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
+          <div className="mt-6 text-center text-sm text-muted">
             {footer}
           </div>
         )}
