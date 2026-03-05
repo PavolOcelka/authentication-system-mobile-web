@@ -170,3 +170,26 @@ describe('updateUserProfile', () => {
     expect(updateDoc).toHaveBeenCalledWith(mockDocRef, {});
   });
 });
+
+// ═════════════════════════════════════════════════════════════════════════════
+describe('Firestore error propagation', () => {
+  const firestoreError = new Error('Firestore unavailable');
+
+  it('createUserProfile propagates Firestore setDoc errors', async () => {
+    vi.mocked(setDoc).mockRejectedValue(firestoreError);
+
+    await expect(createUserProfile('uid-err', 'a@b.com')).rejects.toThrow('Firestore unavailable');
+  });
+
+  it('getUserProfile propagates Firestore getDoc errors', async () => {
+    vi.mocked(getDoc).mockRejectedValue(firestoreError);
+
+    await expect(getUserProfile('uid-err')).rejects.toThrow('Firestore unavailable');
+  });
+
+  it('updateUserProfile propagates Firestore updateDoc errors', async () => {
+    vi.mocked(updateDoc).mockRejectedValue(firestoreError);
+
+    await expect(updateUserProfile('uid-err', { displayName: 'X' })).rejects.toThrow('Firestore unavailable');
+  });
+});
