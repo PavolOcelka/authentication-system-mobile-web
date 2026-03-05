@@ -17,7 +17,7 @@
  * -------------------------
  * - Testing the "error swallowing" pattern: the function catches Firestore
  *   errors, logs them, and returns false. We assert that (a) the return value
- *   is false, (b) console.error WAS called (we don't want silent failures).
+ *   is false, (b) logger.error (console.error) WAS called (we don't want silent failures).
  * - Testing email normalisation (trim + lowercase) via the `doc` call args.
  */
 
@@ -97,7 +97,7 @@ describe('isEmailWhitelisted', () => {
     expect(doc).toHaveBeenCalledWith(expect.anything(), 'whitelist', 'admin@example.com');
   });
 
-  it('returns false and calls console.error when Firestore throws', async () => {
+  it('returns false and logs error via logger.error when Firestore throws', async () => {
     vi.mocked(getDoc).mockRejectedValue(new Error('Network error'));
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 

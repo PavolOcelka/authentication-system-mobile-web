@@ -2,6 +2,7 @@
 
 import './firebase';
 import { createContext, useEffect, useState, type ReactNode } from 'react';
+import { logger } from './logger';
 import type { User as FirebaseUser } from 'firebase/auth';
 import {
   onAuthStateChange,
@@ -37,7 +38,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<AuthError | null>(null);
 
   useEffect(() => {
+    logger.info('AuthProvider: subscribing to auth state');
     const unsubscribe = onAuthStateChange((firebaseUser) => {
+      if (firebaseUser) {
+        logger.info('Auth state changed: user signed in', { uid: firebaseUser.uid, email: firebaseUser.email });
+      } else {
+        logger.info('Auth state changed: no user (signed out)');
+      }
       setUser(firebaseUser ? mapFirebaseUser(firebaseUser) : null);
       setLoading(false);
     });
@@ -50,20 +57,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await action();
     } catch (err) {
-      setError(err as AuthError);
+      const authError = err as AuthError;
+      logger.error('Auth action failed', { code: authError.code, message: authError.message });
+      setError(authError);
     }
   };
 
-  const signIn = (email: string, password: string) =>
-    handleAuthAction(() => authSignIn(email, password));
+  const signIn = (email: string, password: string) => {
+    logger.info('Attempting sign in', { email });
+    return handleAuthAction(() => authSignIn(email, password));
+  };
 
-  const signUp = (email: string, password: string) =>
-    handleAuthAction(() => authSignUp(email, password));
+  const signUp = (email: string, password: string) => {
+    logger.info('Attempting sign up', { email });
+    return handleAuthAction(() => authSignUp(email, password));
+  };
 
-  const signOut = () => handleAuthAction(authSignOut);
+  const signOut = () => {
+    logger.info('Attempting sign out');
+    return handleAuthAction(authSignOut);
+  };
 
-  const resetPassword = (email: string) =>
-    handleAuthAction(() => authResetPassword(email));
+  const resetPassword = (email: string) => {
+    logger.info('Attempting password reset', { email });
+    return handleAuthAction(() => authResetPassword(email));
+  };
 
   return (
     <AuthContext.Provider value={{ user, loading, error, signIn, signUp, signOut, resetPassword }}>
