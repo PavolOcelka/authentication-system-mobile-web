@@ -147,7 +147,7 @@ make docker-build       # build images only
 
 The `beforeUserCreated` blocking function enforces the whitelist server-side — the only way to prevent Auth accounts for non-whitelisted emails.
 
-**Prerequisite:** Upgrade your Firebase project to [Identity Platform](https://firebase.google.com/docs/auth#identity-platform) (required for blocking functions).
+**Prerequisite:** Project is upgraded , Firebase project to [Identity Platform](https://firebase.google.com/docs/auth#identity-platform) (required for blocking functions).
 
 **Deploy:**
 
