@@ -14,14 +14,18 @@ interface FirebaseConfig {
   appId: string;
 }
 
+interface FirebaseOptions {
+  initAuth?: (app: FirebaseApp) => Auth;
+}
+
 let app: FirebaseApp;
 let auth: Auth;
 let db: Firestore;
 
-export const initializeFirebase = (config: FirebaseConfig) => {
+export const initializeFirebase = (config: FirebaseConfig, options?: FirebaseOptions) => {
   if (getApps().length === 0) {
     app = initializeApp(config);
-    auth = getAuth(app);
+    auth = options?.initAuth ? options.initAuth(app) : getAuth(app);
     db = getFirestore(app);
   }
 
