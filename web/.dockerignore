@@ -1,0 +1,3 @@
+# This file is used when docker build is run with web/ as the build context.
+# In this project, docker-compose uses the REPO ROOT as the build context.
+# The root-level .dockerignore applies instead — see /.dockerignore.

@@ -1,6 +1,6 @@
 # Authentication System - Development Commands
 
-.PHONY: help setup setup-env dev-web dev-mobile \
+.PHONY: help setup setup-env setup-env-docker dev-web dev-mobile \
         test test-web test-shared test-web-watch test-shared-watch test-web-coverage test-shared-coverage \
         lint-web build-web \
         docker-up docker-down docker-build \
@@ -19,11 +19,16 @@ setup:
 	cd mobile && npm install
 	@echo "✅ All dependencies installed!"
 
-## Copy .env.example files to .env (will NOT overwrite existing .env)
+## Copy .env.example files to .env.development (will NOT overwrite existing)
 setup-env:
-	@test -f web/.env || cp web/.env.example web/.env && echo "📄 web/.env created"
-	@test -f mobile/.env || cp mobile/.env.example mobile/.env && echo "📄 mobile/.env created"
-	@echo "⚠️  Fill in your Firebase credentials in web/.env and mobile/.env"
+	@test -f web/.env.development || (cp web/.env.example web/.env.development && echo "📄 web/.env.development created")
+	@test -f mobile/.env.development || (cp mobile/.env.example mobile/.env.development && echo "📄 mobile/.env.development created")
+	@echo "⚠️  Fill in your Firebase credentials in web/.env.development and mobile/.env.development"
+
+## Create root .env for docker-compose from .env.example (will NOT overwrite)
+setup-env-docker:
+	@test -f .env || cp .env.example .env && echo "📄 .env created for docker-compose"
+	@echo "⚠️  Fill in your Firebase credentials in .env before running docker-compose"
 
 # ──────────────────────────────────────────────
 # Development
@@ -121,6 +126,7 @@ help:
 	@echo "  Setup"
 	@echo "    make setup              Install all dependencies"
 	@echo "    make setup-env          Create .env files from .env.example templates"
+	@echo "    make setup-env-docker   Create root .env for docker-compose"
 	@echo ""
 	@echo "  Development"
 	@echo "    make dev-web            Start Next.js dev server (localhost:3000)"
