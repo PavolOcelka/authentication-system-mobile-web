@@ -1,6 +1,6 @@
 # Authentication System - Development Commands
 
-.PHONY: help setup setup-env dev-web dev-mobile \
+.PHONY: help setup setup-env setup-env-docker dev-web dev-mobile \
         test test-web test-shared test-web-watch test-shared-watch test-web-coverage test-shared-coverage \
         lint-web build-web \
         docker-up docker-down docker-build \
@@ -25,8 +25,6 @@ setup-env:
 	@test -f mobile/.env.development || (cp mobile/.env.example mobile/.env.development && echo "📄 mobile/.env.development created")
 	@echo "⚠️  Fill in your Firebase credentials in web/.env.development and mobile/.env.development"
 
-<<<<<<< Updated upstream
-=======
 ## Create root .env for docker-compose (will NOT overwrite existing .env)
 setup-env-docker:
 	@if [ -f .env ]; then \
@@ -38,7 +36,6 @@ setup-env-docker:
 	fi
 	@echo "⚠️  Ensure Firebase credentials are set in .env before make docker-up"
 
->>>>>>> Stashed changes
 # ──────────────────────────────────────────────
 # Development
 # ──────────────────────────────────────────────
@@ -135,6 +132,7 @@ help:
 	@echo "  Setup"
 	@echo "    make setup              Install all dependencies"
 	@echo "    make setup-env          Create .env files from .env.example templates"
+	@echo "    make setup-env-docker    Create root .env for docker-compose"
 	@echo ""
 	@echo "  Development"
 	@echo "    make dev-web            Start Next.js dev server (localhost:3000)"
