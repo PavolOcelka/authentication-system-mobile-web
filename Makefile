@@ -14,6 +14,7 @@
 
 ## Install all dependencies (shared + web + mobile + functions)
 setup:
+	npm install
 	cd shared && npm install
 	cd web && npm install
 	cd mobile && npm install
@@ -116,11 +117,11 @@ docker-build:
 
 ## Deploy Cloud Functions (blocking whitelist)
 deploy-functions:
-	cd functions && npm run build && firebase deploy --only functions
+	cd functions && npm run build && cd .. && npx firebase deploy --only functions
 
 ## Deploy Firestore rules
 deploy-rules:
-	firebase deploy --only firestore:rules
+	npx firebase deploy --only firestore:rules
 
 # ──────────────────────────────────────────────
 # Cleanup

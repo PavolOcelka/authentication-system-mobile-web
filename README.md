@@ -88,7 +88,7 @@ EXPO_PUBLIC_MEASUREMENT_ID=
 
 All `.env` files are gitignored. Only `.env.example` files are committed so that other developers know which variables are required without ever exposing real credentials.
 
-**Firebase CLI (for deploy only):** If you'll deploy Cloud Functions or Firestore rules, link your project once before your first deploy: `firebase use <project-id>`. Use the same value as `NEXT_PUBLIC_PROJECT_ID` in your `.env.development`. This is *not* needed to run the app locally — only for `make deploy-functions` or `make deploy-rules`.
+**Firebase CLI (for deploy only):** Firebase tools are included as a dev dependency — no global install needed. Before your first deploy, link your project: `npx firebase use <project-id>`. Use the same value as `NEXT_PUBLIC_PROJECT_ID` in your `.env.development`. Then `make deploy-functions` and `make deploy-rules` work out of the box.
 
 ### 4. Start development servers
 
@@ -153,7 +153,7 @@ The `beforeUserCreated` blocking function enforces the whitelist server-side —
 
 ```bash
 # 1. Link your project (same PROJECT_ID as in .env.development — see Setup step 3)
-firebase use <project-id>
+npx firebase use <project-id>
 
 # 2. Install functions dependencies
 cd functions && npm install && cd ..

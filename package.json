@@ -2,8 +2,11 @@
   "name": "authentication-system",
   "version": "1.0.0",
   "private": true,
+  "devDependencies": {
+    "firebase-tools": "^13.0.0"
+  },
   "scripts": {
-    "setup": "npm run setup:mobile && npm run setup:web && npm run setup:shared && npm run setup:functions",
+    "setup": "npm install && npm run setup:shared && npm run setup:web && npm run setup:mobile && npm run setup:functions",
     "setup:mobile": "cd mobile && npm install",
     "setup:web": "cd web && npm install",
     "setup:shared": "cd shared && npm install",
