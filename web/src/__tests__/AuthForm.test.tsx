@@ -77,9 +77,9 @@ describe('AuthForm', () => {
     });
 
     it('updates the displayed message when a different error is passed', () => {
-      const error = { code: 'auth/user-not-found', message: 'No account with that email.' };
+      const error = { code: 'auth/email-already-in-use', message: 'Unable to create account. The email may not be authorized or may already be in use.' };
       render(<AuthForm {...defaultProps} error={error} />);
-      expect(screen.getByText('No account with that email.')).toBeInTheDocument();
+      expect(screen.getByText('Unable to create account. The email may not be authorized or may already be in use.')).toBeInTheDocument();
     });
   });
 

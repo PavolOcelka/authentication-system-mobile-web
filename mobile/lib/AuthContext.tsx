@@ -11,7 +11,7 @@ import type { User, AuthError } from '@shared/types';
 import '../config/firebase';
 
 const friendlyMessages: Record<string, string> = {
-  'auth/email-already-in-use': 'Unable to create account with this email. Please try a different email or sign in.',
+  'auth/email-already-in-use': 'Unable to create account. The email may not be authorized or may already be in use.',
   'auth/invalid-email': 'Please enter a valid email address.',
   'auth/user-disabled': 'This account has been disabled.',
   'auth/user-not-found': 'Invalid email or password.',
