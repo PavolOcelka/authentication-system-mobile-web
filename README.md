@@ -268,3 +268,12 @@ All tests run through Vitest. Use `make test` to run everything, or `make test-w
 ### Docker
 
 A `docker-compose.yml` and `Dockerfile` are included alongside Makefile targets (`make docker-up`, `make docker-down`, `make docker-build`) for containerised builds and deployment.
+
+<img width="404" height="869" alt="Screenshot 2026-03-05 at 20 20 43" src="https://github.com/user-attachments/assets/d213333c-3d89-402c-8117-ba5ec60d3cb4" />
+<img width="1115" height="722" alt="Screenshot 2026-03-05 at 20 21 06" src="https://github.com/user-attachments/assets/549d0cd7-060d-49b8-a5b4-37d19a4d53e3" />
+<img width="718" height="447" alt="Screenshot 2026-03-05 at 20 21 24" src="https://github.com/user-attachments/assets/4185059a-7a76-4375-87c5-9ed82e8aad01" />
+
+
+
+
+
