@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../lib/useAuth';
@@ -7,8 +7,10 @@ import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 
 export default function RegisterScreen() {
-  const { signUp, loading, error } = useAuth();
+  const { signUp, loading, error, clearError } = useAuth();
   const router = useRouter();
+
+  useEffect(() => { return () => clearError(); }, []);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme];
   const [email, setEmail] = useState('');
@@ -22,8 +24,8 @@ export default function RegisterScreen() {
       setLocalError({ code: 'local/validation', message: 'Passwords do not match.' });
       return;
     }
-    await signUp(email, password);
-    if (!error) router.replace('/(tabs)');
+    const success = await signUp(email, password);
+    if (success) router.replace('/(tabs)');
   };
 
   const displayError = localError ?? error;

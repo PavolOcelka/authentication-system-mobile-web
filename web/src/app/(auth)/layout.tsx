@@ -6,16 +6,16 @@ import { useAuth } from '../../lib/useAuth';
 import type { ReactNode } from 'react';
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
-  const { user, loading } = useAuth();
+  const { user, loading, actionInProgress } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading && !actionInProgress && user) {
       router.replace('/dashboard');
     }
-  }, [user, loading, router]);
+  }, [user, loading, actionInProgress, router]);
 
-  if (loading || user) return null;
+  if (loading || (!actionInProgress && user)) return null;
 
   return (
     <div className="min-h-screen flex flex-col">

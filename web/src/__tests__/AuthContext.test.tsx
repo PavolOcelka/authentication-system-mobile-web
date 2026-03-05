@@ -233,7 +233,7 @@ describe('AuthProvider — signIn action', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('error').textContent).toBe('Wrong password.');
+      expect(screen.getByTestId('error').textContent).toBe('Incorrect password. Please try again.');
     });
   });
 
@@ -241,7 +241,7 @@ describe('AuthProvider — signIn action', () => {
     const firstError = { code: 'auth/wrong-password', message: 'Wrong password.' };
     vi.mocked(authSignIn).mockRejectedValueOnce(firstError).mockResolvedValueOnce(undefined as any);
 
-    let contextSignIn: ((email: string, password: string) => Promise<void>) | undefined;
+    let contextSignIn: ((email: string, password: string) => Promise<boolean>) | undefined;
     function CaptureContext() {
       const ctx = useContext(AuthContext);
       contextSignIn = ctx?.signIn;
@@ -259,7 +259,7 @@ describe('AuthProvider — signIn action', () => {
       await contextSignIn!('user@example.com', 'wrong');
     });
     await waitFor(() => {
-      expect(screen.getAllByTestId('error')[0].textContent).toBe('Wrong password.');
+      expect(screen.getAllByTestId('error')[0].textContent).toBe('Incorrect password. Please try again.');
     });
 
     // Second call — succeeds; error should be cleared
@@ -301,6 +301,70 @@ describe('AuthProvider — signUp, signOut, resetPassword actions', () => {
     });
 
     expect(authSignUp).toHaveBeenCalledWith('new@example.com', 'pass123');
+  });
+
+  it('shows the whitelist message when signUp throws auth/not-whitelisted', async () => {
+    const whitelistError = {
+      code: 'auth/not-whitelisted',
+      message: 'This email is not authorized. Registration is available by invitation only.',
+    };
+    vi.mocked(authSignUp).mockRejectedValueOnce(whitelistError);
+
+    let contextSignUp: ((email: string, password: string) => Promise<boolean>) | undefined;
+    function CaptureContext() {
+      const ctx = useContext(AuthContext);
+      contextSignUp = ctx?.signUp;
+      return null;
+    }
+    render(
+      <AuthProvider>
+        <TestConsumer />
+        <CaptureContext />
+      </AuthProvider>,
+    );
+
+    await act(async () => {
+      const result = await contextSignUp!('not-allowed@example.com', 'pass123');
+      expect(result).toBe(false);
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('error')[0].textContent).toBe(
+        'This email is not authorized. Registration is available by invitation only.',
+      );
+    });
+  });
+
+  it('shows the whitelist message when signIn throws auth/not-whitelisted', async () => {
+    const whitelistError = {
+      code: 'auth/not-whitelisted',
+      message: 'Your account does not have access to this application.',
+    };
+    vi.mocked(authSignIn).mockRejectedValueOnce(whitelistError);
+
+    let contextSignIn: ((email: string, password: string) => Promise<boolean>) | undefined;
+    function CaptureContext() {
+      const ctx = useContext(AuthContext);
+      contextSignIn = ctx?.signIn;
+      return null;
+    }
+    render(
+      <AuthProvider>
+        <TestConsumer />
+        <CaptureContext />
+      </AuthProvider>,
+    );
+
+    await act(async () => {
+      const result = await contextSignIn!('blocked@example.com', 'pass123');
+      expect(result).toBe(false);
+    });
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId('error')[0].textContent).toBe(
+        'Your account does not have access to this application.',
+      );
+    });
   });
 
   it('calls authSignOut', async () => {

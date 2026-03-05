@@ -1,14 +1,16 @@
 'use client';
 
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../lib/useAuth';
 import { AuthForm } from '../../../components/AuthForm';
 
 export default function RegisterPage() {
-  const { signUp, loading, error } = useAuth();
+  const { signUp, loading, error, clearError } = useAuth();
   const router = useRouter();
+
+  useEffect(() => { return () => clearError(); }, []);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -23,8 +25,8 @@ export default function RegisterPage() {
       return;
     }
 
-    await signUp(email, password);
-    if (!error) router.push('/dashboard');
+    const success = await signUp(email, password);
+    if (success) router.push('/dashboard');
   };
 
   const displayError = localError

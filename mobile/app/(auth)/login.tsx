@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../lib/useAuth';
@@ -6,16 +6,18 @@ import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 
 export default function LoginScreen() {
-  const { signIn, loading, error } = useAuth();
+  const { signIn, loading, error, clearError } = useAuth();
   const router = useRouter();
+
+  useEffect(() => { return () => clearError(); }, []);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme];
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async () => {
-    await signIn(email, password);
-    if (!error) router.replace('/(tabs)');
+    const success = await signIn(email, password);
+    if (success) router.replace('/(tabs)');
   };
 
   const styles = createStyles(colors);

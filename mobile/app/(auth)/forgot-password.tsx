@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../lib/useAuth';
@@ -6,16 +6,18 @@ import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 
 export default function ForgotPasswordScreen() {
-  const { resetPassword, loading, error } = useAuth();
+  const { resetPassword, loading, error, clearError } = useAuth();
   const router = useRouter();
+
+  useEffect(() => { return () => clearError(); }, []);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme];
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
 
   const handleSubmit = async () => {
-    await resetPassword(email);
-    if (!error) setSent(true);
+    const success = await resetPassword(email);
+    if (success) setSent(true);
   };
 
   const styles = createStyles(colors);

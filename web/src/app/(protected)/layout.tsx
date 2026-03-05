@@ -7,17 +7,17 @@ import { logger } from '../../lib/logger';
 import type { ReactNode } from 'react';
 
 export default function ProtectedLayout({ children }: { children: ReactNode }) {
-  const { user, loading } = useAuth();
+  const { user, loading, actionInProgress } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !actionInProgress && !user) {
       logger.info('ProtectedLayout: no user, redirecting to /login');
       router.replace('/login');
     }
-  }, [user, loading, router]);
+  }, [user, loading, actionInProgress, router]);
 
-  if (loading || !user) return null;
+  if (loading || actionInProgress || !user) return null;
 
   return <>{children}</>;
 }
