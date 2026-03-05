@@ -1,4 +1,4 @@
-import { initializeFirebase } from '../../../shared/src/firebaseConfig';
+import { initializeFirebase } from '@shared/firebaseConfig';
 
 // load firebase config from Next.js env variables, NEXT_PUBLIC_ prefix is required for client-side access
 const firebaseConfig = {

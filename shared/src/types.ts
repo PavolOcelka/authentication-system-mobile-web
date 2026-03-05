@@ -1,6 +1,3 @@
-/**
- * User interface - represents an authenticated user
- */
 export interface User {
   uid: string;
   email: string | null;
@@ -8,9 +5,6 @@ export interface User {
   createdAt?: Date;
 }
 
-/**
- * Whitelist entry - represents an email in the whitelist
- */
 export interface WhitelistEntry {
   email: string;
   approved: boolean;
@@ -18,10 +12,20 @@ export interface WhitelistEntry {
   addedBy?: string;
 }
 
-/**
- * Auth error interface
- */
 export interface AuthError {
   code: string;
   message: string;
+}
+
+export interface SignInCredentials {
+  email: string;
+  password: string;
+}
+
+export interface SignUpCredentials extends SignInCredentials {}
+
+export interface AuthState {
+  user: User | null;
+  loading: boolean;
+  error: AuthError | null;
 }

@@ -18,29 +18,27 @@ let app: FirebaseApp;
 let auth: Auth;
 let db: Firestore;
 
-/**
- * Initialize Firebase with provided configuration
- * This is a factory function that both mobile and web will call
- * 
- * @param config - Firebase project configuration
- * @returns Object containing auth and db instances
- */
 export const initializeFirebase = (config: FirebaseConfig) => {
-  // Only initialize if not already done
-  // This prevents "Firebase already initialized" errors
   if (getApps().length === 0) {
     app = initializeApp(config);
     auth = getAuth(app);
     db = getFirestore(app);
-    
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('Firebase initialized successfully')
-    }
   }
-  
+
   return { auth, db, app };
 };
 
-export const getAuthInstance = () => auth;
-export const getDbInstance = () => db;
-export const getAppInstance = () => app;
+export const getAuthInstance = (): Auth => {
+  if (!auth) throw new Error('Firebase not initialized. Call initializeFirebase() first.');
+  return auth;
+};
+
+export const getDbInstance = (): Firestore => {
+  if (!db) throw new Error('Firebase not initialized. Call initializeFirebase() first.');
+  return db;
+};
+
+export const getAppInstance = (): FirebaseApp => {
+  if (!app) throw new Error('Firebase not initialized. Call initializeFirebase() first.');
+  return app;
+};
