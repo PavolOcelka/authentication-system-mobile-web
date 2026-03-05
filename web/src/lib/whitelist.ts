@@ -1,5 +1,6 @@
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './firebase';
+import { logger } from './logger';
 
 /**
  * Check if an email address is in the whitelist
@@ -18,16 +19,18 @@ export const isEmailWhitelisted = async (email: string): Promise<boolean> => {
 
     // Document doesn't exist = not whitelisted
     if (!whitelistDoc.exists()) {
+      logger.info('Whitelist check: email not found', { email: normalizedEmail });
       return false;
     }
 
     // Document exists but check the approved field
     const data = whitelistDoc.data();
-    return data?.approved === true;
+    const approved = data?.approved === true;
+    logger.info('Whitelist check result', { email: normalizedEmail, approved });
+    return approved;
 
   } catch (error) {
-    // Log for debugging but don't expose error details to user
-    console.error('Whitelist check failed:', error);
+    logger.error('Whitelist check failed:', error);
     return false;
   }
 };

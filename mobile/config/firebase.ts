@@ -1,7 +1,8 @@
 import Constants from 'expo-constants';
-import { initializeFirebase } from '../../shared/src/firebaseConfig';
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { initializeFirebase } from '@shared/firebaseConfig';
 
-// load firebase config from Expo consts, reads from app.config.js from extra section
 const firebaseConfig = {
   apiKey: Constants.expoConfig?.extra?.firebaseApiKey || '',
   authDomain: Constants.expoConfig?.extra?.firebaseAuthDomain || '',
@@ -11,13 +12,14 @@ const firebaseConfig = {
   appId: Constants.expoConfig?.extra?.firebaseAppId || '',
 };
 
-// validate if all env variables are present
 if (!firebaseConfig.apiKey) {
   throw new Error('Missing Firebase configuration. Check your .env.development file and app.config.js');
 }
 
-// Initialize Firebase with mobile config
-const { auth, db } = initializeFirebase(firebaseConfig);
+const { auth, db } = initializeFirebase(firebaseConfig, {
+  initAuth: (app) => initializeAuth(app, {
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+  }),
+});
 
-// Export for use in mobile app
 export { auth, db };

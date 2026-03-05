@@ -1,19 +1,23 @@
-const tintColorLight = '#2f95dc';
-const tintColorDark = '#fff';
+/* Tingster-inspired theme */
+const accentColor = '#ff6b00';
 
 export default {
   light: {
-    text: '#000',
-    background: '#fff',
-    tint: tintColorLight,
-    tabIconDefault: '#ccc',
-    tabIconSelected: tintColorLight,
+    text: '#333333',
+    background: '#f8f8f8',
+    header: '#363636',
+    card: '#e4e4e7',
+    tint: accentColor,
+    tabIconDefault: '#71717a',
+    tabIconSelected: accentColor,
   },
   dark: {
-    text: '#fff',
-    background: '#000',
-    tint: tintColorDark,
-    tabIconDefault: '#ccc',
-    tabIconSelected: tintColorDark,
+    text: '#ededed',
+    background: '#1a1a1a',
+    header: '#363636',
+    card: '#27272a',
+    tint: accentColor,
+    tabIconDefault: '#71717a',
+    tabIconSelected: accentColor,
   },
 };

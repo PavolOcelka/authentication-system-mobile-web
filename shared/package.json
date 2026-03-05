@@ -5,15 +5,25 @@
   "license": "ISC",
   "author": "",
   "type": "module",
-  "main": "index.js",
+  "main": "./src/firebaseConfig.ts",
+  "exports": {
+    "./*": "./src/*"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "firebase": "^12.10.0"
   },
+  "peerDependencies": {
+    "firebase": "^12.10.0"
+  },
   "devDependencies": {
     "@types/node": "^25.3.3",
-    "typescript": "^5.9.3"
+    "@vitest/coverage-v8": "^4.0.18",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   }
 }

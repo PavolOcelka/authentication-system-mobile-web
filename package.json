@@ -13,6 +13,10 @@
 
     "build:web": "cd web && npm run build",
 
+    "test": "npm run test:shared && npm run test:web",
+    "test:shared": "cd shared && npm test",
+    "test:web": "cd web && npm test",
+
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up",
     "docker:down": "docker-compose down"
