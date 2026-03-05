@@ -1,0 +1,37 @@
+# ── Dependencies ─────────────────────────────────────────────────────────────
+# Never send node_modules to the Docker daemon — they are installed inside
+# the image during the deps stage.
+**/node_modules
+
+# ── Build outputs ────────────────────────────────────────────────────────────
+**/.next
+**/dist
+**/out
+
+# ── Mobile app ───────────────────────────────────────────────────────────────
+# The web Docker image does not need any mobile source files.
+mobile/
+
+# ── Secrets — must NEVER be baked into the image ─────────────────────────────
+# .env files are excluded globally. NEXT_PUBLIC_* values are passed exclusively
+# as --build-arg entries from docker-compose (sourced from the root .env file).
+**/.env
+**/.env.local
+**/.env.development
+**/.env.production
+!**/.env.example
+
+# ── Version control ──────────────────────────────────────────────────────────
+.git
+.gitignore
+
+# ── Editor and OS noise ──────────────────────────────────────────────────────
+**/.DS_Store
+**/Thumbs.db
+**/.vscode
+**/.idea
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
