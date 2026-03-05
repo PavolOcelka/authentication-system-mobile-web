@@ -25,10 +25,16 @@ setup-env:
 	@test -f mobile/.env.development || (cp mobile/.env.example mobile/.env.development && echo "📄 mobile/.env.development created")
 	@echo "⚠️  Fill in your Firebase credentials in web/.env.development and mobile/.env.development"
 
-## Create root .env for docker-compose from .env.example (will NOT overwrite)
+## Create root .env for docker-compose (will NOT overwrite existing .env)
 setup-env-docker:
-	@test -f .env || cp .env.example .env && echo "📄 .env created for docker-compose"
-	@echo "⚠️  Fill in your Firebase credentials in .env before running docker-compose"
+	@if [ -f .env ]; then \
+		echo "📄 .env already exists"; \
+	elif [ -f web/.env.development ]; then \
+		cp web/.env.development .env && echo "📄 .env created from web/.env.development"; \
+	else \
+		cp .env.example .env && echo "📄 .env created from .env.example"; \
+	fi
+	@echo "⚠️  Ensure Firebase credentials are set in .env before make docker-up"
 
 # ──────────────────────────────────────────────
 # Development
