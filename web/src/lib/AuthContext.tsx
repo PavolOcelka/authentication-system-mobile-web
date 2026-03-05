@@ -15,11 +15,11 @@ import {
 import type { User, AuthError } from '@shared/types';
 
 const friendlyMessages: Record<string, string> = {
-  'auth/email-already-in-use': 'An account with this email already exists.',
+  'auth/email-already-in-use': 'Unable to create account. The email may not be authorized or may already be in use.',
   'auth/invalid-email': 'Please enter a valid email address.',
   'auth/user-disabled': 'This account has been disabled.',
-  'auth/user-not-found': 'No account found with this email.',
-  'auth/wrong-password': 'Incorrect password. Please try again.',
+  'auth/user-not-found': 'Invalid email or password.',
+  'auth/wrong-password': 'Invalid email or password.',
   'auth/invalid-credential': 'Invalid email or password.',
   'auth/too-many-requests': 'Too many attempts. Please try again later.',
   'auth/weak-password': 'Password is too weak. Use at least 6 characters.',

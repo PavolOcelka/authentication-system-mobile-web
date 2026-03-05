@@ -233,7 +233,7 @@ describe('AuthProvider — signIn action', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('error').textContent).toBe('Incorrect password. Please try again.');
+      expect(screen.getByTestId('error').textContent).toBe('Invalid email or password.');
     });
   });
 
@@ -259,7 +259,7 @@ describe('AuthProvider — signIn action', () => {
       await contextSignIn!('user@example.com', 'wrong');
     });
     await waitFor(() => {
-      expect(screen.getAllByTestId('error')[0].textContent).toBe('Incorrect password. Please try again.');
+      expect(screen.getAllByTestId('error')[0].textContent).toBe('Invalid email or password.');
     });
 
     // Second call — succeeds; error should be cleared
