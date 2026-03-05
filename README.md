@@ -116,8 +116,10 @@ make test-shared-watch  # shared in watch mode
 
 ```bash
 make lint-web           # ESLint
-make build-web          # production build
+make build-web          # production build (requires web/.env.production — see below)
 ```
+
+For a local production build, copy your Firebase credentials to `web/.env.production` (e.g. from `web/.env.development`). The Docker build reads credentials from the root `.env` instead.
 
 ### 7. Docker
 

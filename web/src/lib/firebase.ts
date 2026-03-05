@@ -12,7 +12,8 @@ const firebaseConfig = {
 };
 
 if (!firebaseConfig.apiKey) {
-  throw new Error('Missing Firebase configuration. Check your .env.development file.');
+  const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+  throw new Error(`Missing Firebase configuration. Check your ${envFile} file.`);
 }
 
 const { auth, db } = initializeFirebase(firebaseConfig);

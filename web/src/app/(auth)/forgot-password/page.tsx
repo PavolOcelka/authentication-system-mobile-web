@@ -8,7 +8,7 @@ import { AuthForm } from '../../../components/AuthForm';
 export default function ForgotPasswordPage() {
   const { resetPassword, loading, error, clearError } = useAuth();
 
-  useEffect(() => { return () => clearError(); }, []);
+  useEffect(() => { return () => clearError(); }, [clearError]);
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
 
