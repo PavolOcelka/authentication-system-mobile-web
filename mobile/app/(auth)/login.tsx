@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useAuth } from '../../lib/useAuth';
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
 
 export default function LoginScreen() {
   const { signIn, loading, error } = useAuth();
   const router = useRouter();
+  const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme];
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -13,6 +17,8 @@ export default function LoginScreen() {
     await signIn(email, password);
     if (!error) router.replace('/(tabs)');
   };
+
+  const styles = createStyles(colors);
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -43,23 +49,30 @@ export default function LoginScreen() {
       </Pressable>
 
       <View style={styles.footer}>
-        <Link href="/(auth)/forgot-password" style={styles.link}>Forgot password?</Link>
+        <Pressable onPress={() => router.replace('/(auth)/forgot-password')} style={({ pressed }) => pressed && styles.linkPressed}>
+          <Text style={styles.link}>Forgot password?</Text>
+        </Pressable>
         <Text style={styles.separator}> · </Text>
-        <Link href="/(auth)/register" style={styles.link}>Create account</Link>
+        <Pressable onPress={() => router.replace('/(auth)/register')} style={({ pressed }) => pressed && styles.linkPressed}>
+          <Text style={styles.link}>Create account</Text>
+        </Pressable>
       </View>
     </KeyboardAvoidingView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 24, backgroundColor: '#fff' },
-  title: { fontSize: 24, fontWeight: '600', color: '#09090b', marginBottom: 24 },
-  input: { height: 44, borderWidth: 1, borderColor: '#e4e4e7', borderRadius: 8, paddingHorizontal: 12, fontSize: 14, color: '#09090b', marginBottom: 12 },
-  button: { height: 44, backgroundColor: '#09090b', borderRadius: 8, alignItems: 'center', justifyContent: 'center', marginTop: 8 },
-  buttonDisabled: { opacity: 0.5 },
-  buttonText: { color: '#fff', fontSize: 14, fontWeight: '500' },
-  error: { color: '#b91c1c', fontSize: 13, marginBottom: 12, padding: 12, backgroundColor: '#fef2f2', borderRadius: 8 },
-  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 24 },
-  link: { fontSize: 14, color: '#71717a' },
-  separator: { fontSize: 14, color: '#71717a' },
-});
+function createStyles(colors: typeof Colors.light) {
+  return StyleSheet.create({
+    container: { flex: 1, justifyContent: 'center', padding: 24, backgroundColor: colors.background },
+    title: { fontSize: 24, fontWeight: '600', color: colors.text, marginBottom: 24 },
+    input: { height: 44, borderWidth: 1, borderColor: '#e4e4e7', borderRadius: 8, paddingHorizontal: 12, fontSize: 14, color: colors.text, marginBottom: 12 },
+    button: { height: 44, backgroundColor: colors.tint, borderRadius: 8, alignItems: 'center', justifyContent: 'center', marginTop: 8 },
+    buttonDisabled: { opacity: 0.5 },
+    buttonText: { color: '#fff', fontSize: 14, fontWeight: '500' },
+    error: { color: '#b91c1c', fontSize: 13, marginBottom: 12, padding: 12, backgroundColor: '#fef2f2', borderRadius: 8 },
+    footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 24 },
+    link: { fontSize: 14, color: colors.tabIconDefault },
+    linkPressed: { opacity: 0.6 },
+    separator: { fontSize: 14, color: colors.tabIconDefault },
+  });
+}

@@ -1,10 +1,15 @@
 import { useState } from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useAuth } from '../../lib/useAuth';
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
 
 export default function ForgotPasswordScreen() {
   const { resetPassword, loading, error } = useAuth();
+  const router = useRouter();
+  const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme];
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
 
@@ -13,12 +18,16 @@ export default function ForgotPasswordScreen() {
     if (!error) setSent(true);
   };
 
+  const styles = createStyles(colors);
+
   if (sent) {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Check your email</Text>
         <Text style={styles.subtitle}>We sent a password reset link to {email}</Text>
-        <Link href="/(auth)/login" style={styles.link}>Back to sign in</Link>
+        <Pressable onPress={() => router.replace('/(auth)/login')} style={({ pressed }) => pressed && styles.linkPressed}>
+          <Text style={styles.link}>Back to sign in</Text>
+        </Pressable>
       </View>
     );
   }
@@ -45,21 +54,26 @@ export default function ForgotPasswordScreen() {
       </Pressable>
 
       <View style={styles.footer}>
-        <Link href="/(auth)/login" style={styles.link}>Back to sign in</Link>
+        <Pressable onPress={() => router.replace('/(auth)/login')} style={({ pressed }) => pressed && styles.linkPressed}>
+          <Text style={styles.link}>Back to sign in</Text>
+        </Pressable>
       </View>
     </KeyboardAvoidingView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 24, backgroundColor: '#fff' },
-  title: { fontSize: 24, fontWeight: '600', color: '#09090b', marginBottom: 8 },
-  subtitle: { fontSize: 14, color: '#71717a', marginBottom: 24 },
-  input: { height: 44, borderWidth: 1, borderColor: '#e4e4e7', borderRadius: 8, paddingHorizontal: 12, fontSize: 14, color: '#09090b', marginBottom: 12 },
-  button: { height: 44, backgroundColor: '#09090b', borderRadius: 8, alignItems: 'center', justifyContent: 'center', marginTop: 8 },
-  buttonDisabled: { opacity: 0.5 },
-  buttonText: { color: '#fff', fontSize: 14, fontWeight: '500' },
-  error: { color: '#b91c1c', fontSize: 13, marginBottom: 12, padding: 12, backgroundColor: '#fef2f2', borderRadius: 8 },
-  footer: { alignItems: 'center', marginTop: 24 },
-  link: { fontSize: 14, color: '#09090b', fontWeight: '500' },
-});
+function createStyles(colors: typeof Colors.light) {
+  return StyleSheet.create({
+    container: { flex: 1, justifyContent: 'center', padding: 24, backgroundColor: colors.background },
+    title: { fontSize: 24, fontWeight: '600', color: colors.text, marginBottom: 8 },
+    subtitle: { fontSize: 14, color: colors.tabIconDefault, marginBottom: 24 },
+    input: { height: 44, borderWidth: 1, borderColor: '#e4e4e7', borderRadius: 8, paddingHorizontal: 12, fontSize: 14, color: colors.text, marginBottom: 12 },
+    button: { height: 44, backgroundColor: colors.tint, borderRadius: 8, alignItems: 'center', justifyContent: 'center', marginTop: 8 },
+    buttonDisabled: { opacity: 0.5 },
+    buttonText: { color: '#fff', fontSize: 14, fontWeight: '500' },
+    error: { color: '#b91c1c', fontSize: 13, marginBottom: 12, padding: 12, backgroundColor: '#fef2f2', borderRadius: 8 },
+    footer: { alignItems: 'center', marginTop: 24 },
+    link: { fontSize: 14, color: colors.text, fontWeight: '500' },
+    linkPressed: { opacity: 0.6 },
+  });
+}

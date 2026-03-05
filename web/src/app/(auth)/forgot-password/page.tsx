@@ -18,13 +18,13 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black px-4">
+      <div className="flex min-h-full flex-1 items-center justify-center bg-background px-4">
         <div className="w-full max-w-sm text-center">
-          <h1 className="mb-3 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Check your email</h1>
-          <p className="mb-6 text-sm text-zinc-500 dark:text-zinc-400">
-            If an account exists for <span className="font-medium text-zinc-900 dark:text-zinc-50">{email}</span>, a reset link has been sent.
+          <h1 className="mb-3 text-2xl font-semibold text-foreground">Check your email</h1>
+          <p className="mb-6 text-sm text-muted">
+            If an account exists for <span className="font-medium text-foreground">{email}</span>, a reset link has been sent.
           </p>
-          <Link href="/login" className="text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50">
+          <Link href="/login" className="text-sm text-muted hover:text-foreground">
             Back to sign in
           </Link>
         </div>
@@ -35,12 +35,13 @@ export default function ForgotPasswordPage() {
   return (
     <AuthForm
       title="Reset password"
+      subtitle="Enter your email and we'll send you a reset link."
       onSubmit={handleSubmit}
       error={error}
       loading={loading}
       submitLabel="Send reset link"
       footer={
-        <Link href="/login" className="hover:text-zinc-900 dark:hover:text-zinc-50">
+        <Link href="/login" className="text-muted hover:text-foreground">
           Back to sign in
         </Link>
       }
@@ -51,7 +52,7 @@ export default function ForgotPasswordPage() {
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="h-10 rounded-lg border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder-zinc-400 outline-none focus:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder-zinc-600 dark:focus:border-zinc-600"
+        className="h-10 rounded-lg border border-border bg-input px-3 text-sm text-foreground placeholder-muted outline-none focus:border-accent"
       />
     </AuthForm>
   );

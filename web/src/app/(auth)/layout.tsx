@@ -17,5 +17,14 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
 
   if (loading || user) return null;
 
-  return <>{children}</>;
+  return (
+    <div className="min-h-screen flex flex-col">
+      <header className="bg-header px-6 py-4">
+        <span className="text-lg font-semibold text-accent-foreground">
+          <span className="text-accent">Auth</span> System
+        </span>
+      </header>
+      <main className="flex flex-1">{children}</main>
+    </div>
+  );
 }
