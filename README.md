@@ -135,6 +135,8 @@ Then open `.env` in the project root and fill in the same `NEXT_PUBLIC_*` values
 make docker-up          # build and start containers
 make docker-down        # stop containers
 make docker-build       # build images only
+
+#Run make docker-build first if docker-up fails
 ```
 
 ### 8. Cleanup
