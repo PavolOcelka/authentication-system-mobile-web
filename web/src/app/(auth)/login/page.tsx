@@ -10,7 +10,7 @@ export default function LoginPage() {
   const { signIn, loading, error, clearError } = useAuth();
   const router = useRouter();
 
-  useEffect(() => { return () => clearError(); }, []);
+  useEffect(() => { return () => clearError(); }, [clearError]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 

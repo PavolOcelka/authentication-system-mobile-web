@@ -142,7 +142,7 @@ describe('AuthForm', () => {
 
     it('does not call onSubmit when button is disabled (loading)', () => {
       const onSubmit = vi.fn((e: React.FormEvent) => e.preventDefault());
-      const { container } = render(
+      render(
         <AuthForm {...defaultProps} onSubmit={onSubmit} loading={true} />,
       );
 

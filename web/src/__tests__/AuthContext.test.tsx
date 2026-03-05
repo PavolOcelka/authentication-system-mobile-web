@@ -28,11 +28,12 @@
  * - `../lib/firebase` is mocked as an empty object (side-effect-only import)
  * - `@shared/authService` is fully mocked so no Firebase calls happen
  */
+/* eslint-disable react-hooks/immutability -- test helpers capture context for assertion */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, act, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { useContext } from 'react';
+import type { User as FirebaseUser } from 'firebase/auth';
 import { AuthProvider, AuthContext } from '../lib/AuthContext';
 import { useAuth } from '../lib/useAuth';
 import {
@@ -55,11 +56,11 @@ vi.mock('@shared/authService', () => ({
 }));
 
 // ─── Fake Firebase users ──────────────────────────────────────────────────────
-const fakeFirebaseUser = {
+const fakeFirebaseUser: FirebaseUser = {
   uid: 'uid-abc-123',
   email: 'alice@example.com',
   displayName: 'Alice',
-} as any;
+} as FirebaseUser;
 
 // ─── Test consumer ────────────────────────────────────────────────────────────
 // A helper component that reads from AuthContext and renders state values as
@@ -80,7 +81,7 @@ function TestConsumer() {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 // Capture the callback passed to onAuthStateChange so tests can fire auth
 // state transitions at will.
-let capturedAuthCallback: ((user: any) => void) | null = null;
+let capturedAuthCallback: ((user: FirebaseUser | null) => void) | null = null;
 let mockUnsubscribe: ReturnType<typeof vi.fn>;
 
 function renderProvider() {
@@ -188,14 +189,13 @@ describe('AuthProvider — auth state transitions', () => {
 // ═════════════════════════════════════════════════════════════════════════════
 describe('AuthProvider — signIn action', () => {
   it('calls authSignIn with email and password', async () => {
-    vi.mocked(authSignIn).mockResolvedValue(undefined as any);
+    vi.mocked(authSignIn).mockResolvedValue(fakeFirebaseUser);
     renderProvider();
 
-    // Obtain the signIn function from context
-    let contextSignIn: ((email: string, password: string) => Promise<void>) | undefined;
+    const signInRef = { current: undefined as ((email: string, password: string) => Promise<boolean>) | undefined };
     function CaptureContext() {
       const ctx = useContext(AuthContext);
-      contextSignIn = ctx?.signIn;
+      signInRef.current = ctx?.signIn;
       return null;
     }
     render(
@@ -205,7 +205,7 @@ describe('AuthProvider — signIn action', () => {
     );
 
     await act(async () => {
-      await contextSignIn!('user@example.com', 'secret123');
+      await signInRef.current!('user@example.com', 'secret123');
     });
 
     expect(authSignIn).toHaveBeenCalledWith('user@example.com', 'secret123');
@@ -215,10 +215,10 @@ describe('AuthProvider — signIn action', () => {
     const authError = { code: 'auth/wrong-password', message: 'Wrong password.' };
     vi.mocked(authSignIn).mockRejectedValue(authError);
 
-    let contextSignIn: ((email: string, password: string) => Promise<void>) | undefined;
+    const signInRef = { current: undefined as ((email: string, password: string) => Promise<boolean>) | undefined };
     function CaptureContext() {
       const ctx = useContext(AuthContext);
-      contextSignIn = ctx?.signIn;
+      signInRef.current = ctx?.signIn;
       return null;
     }
     render(
@@ -229,7 +229,7 @@ describe('AuthProvider — signIn action', () => {
     );
 
     await act(async () => {
-      await contextSignIn!('bad@example.com', 'wrong');
+      await signInRef.current!('bad@example.com', 'wrong');
     });
 
     await waitFor(() => {
@@ -239,12 +239,12 @@ describe('AuthProvider — signIn action', () => {
 
   it('clears a previous error before a new signIn attempt', async () => {
     const firstError = { code: 'auth/wrong-password', message: 'Wrong password.' };
-    vi.mocked(authSignIn).mockRejectedValueOnce(firstError).mockResolvedValueOnce(undefined as any);
+    vi.mocked(authSignIn).mockRejectedValueOnce(firstError).mockResolvedValueOnce(fakeFirebaseUser);
 
-    let contextSignIn: ((email: string, password: string) => Promise<boolean>) | undefined;
+    const signInRef = { current: undefined as ((email: string, password: string) => Promise<boolean>) | undefined };
     function CaptureContext() {
       const ctx = useContext(AuthContext);
-      contextSignIn = ctx?.signIn;
+      signInRef.current = ctx?.signIn;
       return null;
     }
     render(
@@ -256,7 +256,7 @@ describe('AuthProvider — signIn action', () => {
 
     // First call — fails and sets error
     await act(async () => {
-      await contextSignIn!('user@example.com', 'wrong');
+      await signInRef.current!('user@example.com', 'wrong');
     });
     await waitFor(() => {
       expect(screen.getAllByTestId('error')[0].textContent).toBe('Invalid email or password.');
@@ -264,7 +264,7 @@ describe('AuthProvider — signIn action', () => {
 
     // Second call — succeeds; error should be cleared
     await act(async () => {
-      await contextSignIn!('user@example.com', 'correct');
+      await signInRef.current!('user@example.com', 'correct');
     });
     await waitFor(() => {
       expect(screen.getAllByTestId('error')[0].textContent).toBe('null');
@@ -278,10 +278,10 @@ describe('AuthProvider — signUp, signOut, resetPassword actions', () => {
   function useProviderAction(
     actionKey: 'signUp' | 'signOut' | 'resetPassword',
   ) {
-    let capturedAction: ((...args: any[]) => Promise<void>) | undefined;
+    const actionRef = { current: undefined as ((...args: unknown[]) => Promise<unknown>) | undefined };
     function CaptureContext() {
       const ctx = useContext(AuthContext);
-      capturedAction = ctx?.[actionKey] as any;
+      actionRef.current = ctx?.[actionKey] as ((...args: unknown[]) => Promise<unknown>) | undefined;
       return null;
     }
     render(
@@ -289,11 +289,11 @@ describe('AuthProvider — signUp, signOut, resetPassword actions', () => {
         <CaptureContext />
       </AuthProvider>,
     );
-    return () => capturedAction;
+    return () => actionRef.current;
   }
 
   it('calls authSignUp with email and password', async () => {
-    vi.mocked(authSignUp).mockResolvedValue(undefined as any);
+    vi.mocked(authSignUp).mockResolvedValue(fakeFirebaseUser);
     const getAction = useProviderAction('signUp');
 
     await act(async () => {
@@ -310,10 +310,10 @@ describe('AuthProvider — signUp, signOut, resetPassword actions', () => {
     };
     vi.mocked(authSignUp).mockRejectedValueOnce(whitelistError);
 
-    let contextSignUp: ((email: string, password: string) => Promise<boolean>) | undefined;
+    const signUpRef = { current: undefined as ((email: string, password: string) => Promise<boolean>) | undefined };
     function CaptureContext() {
       const ctx = useContext(AuthContext);
-      contextSignUp = ctx?.signUp;
+      signUpRef.current = ctx?.signUp;
       return null;
     }
     render(
@@ -324,7 +324,7 @@ describe('AuthProvider — signUp, signOut, resetPassword actions', () => {
     );
 
     await act(async () => {
-      const result = await contextSignUp!('not-allowed@example.com', 'pass123');
+      const result = await signUpRef.current!('not-allowed@example.com', 'pass123');
       expect(result).toBe(false);
     });
 
@@ -342,10 +342,10 @@ describe('AuthProvider — signUp, signOut, resetPassword actions', () => {
     };
     vi.mocked(authSignIn).mockRejectedValueOnce(whitelistError);
 
-    let contextSignIn: ((email: string, password: string) => Promise<boolean>) | undefined;
+    const signInRef = { current: undefined as ((email: string, password: string) => Promise<boolean>) | undefined };
     function CaptureContext() {
       const ctx = useContext(AuthContext);
-      contextSignIn = ctx?.signIn;
+      signInRef.current = ctx?.signIn;
       return null;
     }
     render(
@@ -356,7 +356,7 @@ describe('AuthProvider — signUp, signOut, resetPassword actions', () => {
     );
 
     await act(async () => {
-      const result = await contextSignIn!('blocked@example.com', 'pass123');
+      const result = await signInRef.current!('blocked@example.com', 'pass123');
       expect(result).toBe(false);
     });
 
