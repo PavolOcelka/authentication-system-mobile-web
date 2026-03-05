@@ -4,6 +4,8 @@ import { getAuth } from 'firebase/auth';
 import type { Auth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import type { Firestore } from 'firebase/firestore';
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
+import type { AppCheck } from 'firebase/app-check';
 
 interface FirebaseConfig {
   apiKey: string;
@@ -45,4 +47,12 @@ export const getDbInstance = (): Firestore => {
 export const getAppInstance = (): FirebaseApp => {
   if (!app) throw new Error('Firebase not initialized. Call initializeFirebase() first.');
   return app;
+};
+
+export const initializeWebAppCheck = (siteKey: string): AppCheck => {
+  if (!app) throw new Error('Firebase not initialized. Call initializeFirebase() first.');
+  return initializeAppCheck(app, {
+    provider: new ReCaptchaEnterpriseProvider(siteKey),
+    isTokenAutoRefreshEnabled: true,
+  });
 };

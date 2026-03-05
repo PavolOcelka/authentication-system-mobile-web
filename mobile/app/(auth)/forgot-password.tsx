@@ -26,7 +26,7 @@ export default function ForgotPasswordScreen() {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Check your email</Text>
-        <Text style={styles.subtitle}>We sent a password reset link to {email}</Text>
+        <Text style={styles.subtitle}>If an account exists with that email, a reset link has been sent.</Text>
         <Pressable onPress={() => router.replace('/(auth)/login')} style={({ pressed }) => pressed && styles.linkPressed}>
           <Text style={styles.link}>Back to sign in</Text>
         </Pressable>
