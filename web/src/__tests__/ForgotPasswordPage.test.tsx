@@ -107,10 +107,10 @@ describe('ForgotPasswordPage', () => {
   });
 
   it('displays an error message when error is present', () => {
-    mockError = { code: 'auth/user-not-found', message: 'No account with that email.' };
+    mockError = { code: 'auth/too-many-requests', message: 'Too many attempts. Please try again later.' };
     render(<ForgotPasswordPage />);
 
-    expect(screen.getByText('No account with that email.')).toBeInTheDocument();
+    expect(screen.getByText('Too many attempts. Please try again later.')).toBeInTheDocument();
   });
 
   it('shows "Please wait..." button text when loading', () => {

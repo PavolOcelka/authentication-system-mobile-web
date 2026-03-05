@@ -303,7 +303,7 @@ describe('AuthProvider — signUp, signOut, resetPassword actions', () => {
     expect(authSignUp).toHaveBeenCalledWith('new@example.com', 'pass123');
   });
 
-  it('shows the whitelist message when signUp throws auth/not-whitelisted', async () => {
+  it('shows the vague message when signUp throws auth/not-whitelisted', async () => {
     const whitelistError = {
       code: 'auth/not-whitelisted',
       message: 'This email is not authorized. Registration is available by invitation only.',
@@ -330,12 +330,12 @@ describe('AuthProvider — signUp, signOut, resetPassword actions', () => {
 
     await waitFor(() => {
       expect(screen.getAllByTestId('error')[0].textContent).toBe(
-        'This email is not authorized. Registration is available by invitation only.',
+        'Unable to create account. The email may not be authorized or may already be in use.',
       );
     });
   });
 
-  it('shows the whitelist message when signIn throws auth/not-whitelisted', async () => {
+  it('shows the vague message when signIn throws auth/not-whitelisted', async () => {
     const whitelistError = {
       code: 'auth/not-whitelisted',
       message: 'Your account does not have access to this application.',
@@ -362,7 +362,7 @@ describe('AuthProvider — signUp, signOut, resetPassword actions', () => {
 
     await waitFor(() => {
       expect(screen.getAllByTestId('error')[0].textContent).toBe(
-        'Your account does not have access to this application.',
+        'Unable to create account. The email may not be authorized or may already be in use.',
       );
     });
   });
